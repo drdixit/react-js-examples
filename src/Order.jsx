@@ -34,7 +34,11 @@ export default function Order() {
           </div>
           {/* in theory event bubbling still works in react but don't do it like this */}
           {/* <div onChange={(e) => setPizzaSize(e.target.value)}> */}
-          <div onChange={(e) => setPizzaSize(e.target.value)}>
+          {/* we have one event listener on parent element react doesn't like this because it's views as inaccessible */}
+          {/* generally you don't want change handlers on a div */}
+          {/* because screen readers and all that kind of stuff can't access divs
+          they access inputs */}
+          <div>
             <label htmlFor="pizza-size">Pizza Size</label>
             <div>
               <span>
@@ -44,6 +48,7 @@ export default function Order() {
                   name="pizza-size"
                   value="S"
                   id="pizza-s"
+                  onChange={(e) => setPizzaSize(e.target.value)}
                 />
                 <label htmlFor="pizza-s">Small</label>
               </span>
@@ -54,6 +59,7 @@ export default function Order() {
                   name="pizza-size"
                   value="M"
                   id="pizza-m"
+                  onChange={(e) => setPizzaSize(e.target.value)}
                 />
                 <label htmlFor="pizza-m">Medium</label>
               </span>
@@ -64,6 +70,7 @@ export default function Order() {
                   name="pizza-size"
                   value="L"
                   id="pizza-l"
+                  onChange={(e) => setPizzaSize(e.target.value)}
                 />
                 <label htmlFor="pizza-l">Large</label>
               </span>
