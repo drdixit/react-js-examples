@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pizza from "./Pizza";
 
+const intl = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
 export default function Order() {
+  const [pizzaTypes, setPizzaTypes] = useState([]);
+
   //   const pizzaType = "pepperoni";
   //   const pizzaSize = "M";
 
@@ -14,6 +21,37 @@ export default function Order() {
 
   const [pizzaType, setPizzaType] = useState("pepperoni");
   const [pizzaSize, setPizzaSize] = useState("M");
+  const [loading, setLoading] = useState(true);
+
+  // this are not hooks despite the fact that are mutable
+  // this is because its kind a derivative state (vue has concepts of derivative states, may be svelte has it too)
+  // doesn't exist in react you just keep track on normal variables
+  // price is going to be whatever selected pizza's price is
+  let price, selectedPizza;
+
+  if (!loading) {
+    selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
+  }
+
+  async function fetchPizzaTypes() {
+    const pizzaRes = await fetch("/api/pizzas");
+    const pizzaJson = await pizzaRes.json();
+    setPizzaTypes(pizzaJson);
+    setLoading(false);
+  }
+
+  // i need to do like outside of render cycle
+  // i have my renders and i have things that need to happen outside of renders.
+  // i want to kind of control when that happens
+  useEffect(() => {
+    fetchPizzaTypes();
+  }, []);
+
+  // fetchPizzaTypes();
+  // its a bad idea to call it directly here because
+  // because it would run every single time when the component rendered
+  // basically you are DDosing your self
+  // i only do it once when the components loads the answer is useEffect
 
   return (
     <div className="order">
@@ -27,9 +65,11 @@ export default function Order() {
               name="pizza-type"
               value={pizzaType}
             >
-              <option value="pepperoni">The Pepperoni Pizza</option>
-              <option value="hawaiian">The Hawaiian Pizza</option>
-              <option value="big_meat">The Big Meat Pizza</option>
+              {pizzaTypes.map((pizza) => (
+                <option key={pizza.id} value={pizza.id}>
+                  {pizza.name}
+                </option>
+              ))}
             </select>
           </div>
           {/* in theory event bubbling still works in react but don't do it like this */}
