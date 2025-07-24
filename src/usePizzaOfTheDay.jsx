@@ -1,5 +1,6 @@
 // this is a custom hook this a concept that people kind a associate with React
 // but it's just a function that calls other hooks
+// eslint-disable-next-line no-unused-vars
 import { useState, useEffect, useDebugValue } from "react";
 
 export const usePizzaOfTheDay = () => {
