@@ -6,12 +6,52 @@ import getPastOrder from "../api/getPastOrder";
 import Modal from "../Modal";
 // import useCurrency from "../useCurrency";
 import { priceConverter } from "../useCurrency";
+import ErrorBoundary from "../ErrorBoundary";
 
 export const Route = createLazyFileRoute("/past")({
-  component: PastOrdersRoute,
+  //   component: PastOrdersRoute,
+  component: ErrorBoundaryWrappedPastOrdersRoute,
 });
 
+function ErrorBoundaryWrappedPastOrdersRoute() {
+  return (
+    // ErrorBoundary can only catch things that are rendered inside of it
+    // so if it's on the same level as the component it won't catch it. it wouldn't get the opportunity to catch the error. so it has to be outside of it
+    // which is why we have to have two components here and we are actually shipping the ErrorBoundaryWrapped... one
+    <ErrorBoundary>
+      <PastOrdersRoute />
+    </ErrorBoundary>
+  );
+}
+// you can put root inside ErrorBoundary advantages of putting it inside the app is you can catch 404 errors
+// what if we want to pass a props to it we can so something like this
+// function ErrorBoundaryWrappedPastOrdersRoute(props) {
+//   return (
+//     <ErrorBoundary>
+//       <PastOrdersRoute {...props} />
+//     </ErrorBoundary>
+//   );
+// }
+// why don't we use spread operator
+// ex props {
+// stuff: "cool",
+// otherStuff: "not cool"}
+// function ErrorBoundaryWrappedPastOrdersRoute(props) {
+//   return (
+//     <ErrorBoundary>
+//       this one is way readable you want to be explicit about what you are passing for sack of your future self
+//       you make it pretty opaque like what is coming from where and where is it going
+//       <PastOrdersRoute stuff={props.stuff} otherStuff={props.otherStuff} />
+//             vs
+//       the only reason in this particular case that i am okay with using spread operator
+//       is that because this perticular component is meant to be a passthrough. it's actually not meant to know about what's coming into it and where it's going
+//       <PastOrdersRoute {...props} />
+//     </ErrorBoundary>
+//   );
+// }
+
 function PastOrdersRoute() {
+  //   throw new Error("This is a test error for the ErrorBoundary component!");
   const [page, setPage] = useState(1);
   const [focusedOrder, setFocusedOrder] = useState();
   const { isLoading, data } = useQuery({
