@@ -21,6 +21,10 @@ function ContactRoute() {
     },
   });
 
+  //   if (mutation.isError) {
+  //     return <h1>error LOL NO</h1>;
+  //   }
+
   return (
     <div className="contact">
       <h2>Contact</h2>
